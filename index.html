@@ -2,7 +2,7 @@
 <meta charset="UTF8">
 <html>
   <head>
-    <title>Madison Tree Types</title>
+    <title>Minneapolis Tree Types</title>
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.15-beta/nv.d3.min.css">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.js" charset="utf-8"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.15-beta/nv.d3.js"></script>
@@ -90,7 +90,7 @@
         attribution: 'MapBox'
       }).addTo(map);
 
-      var layerUrl = 'https://dkan.cartodb.com/u/dkan-admin/api/v2/viz/6f588616-d19d-11e4-a931-7054d21a95e5/viz.json';
+      var layerUrl = 'https://dkan.cartodb.com/u/dkan-admin/api/v2/viz/e17b4f98-1996-11e6-b55e-0ecd1babdde5/viz.json';
 
       var sublayers = [];
 
@@ -102,12 +102,12 @@
             $("h2.tree-type").text(initialTree);
             stats(initialTree);
             var subLayerOptions = {
-              sql: "SELECT * FROM madison_trees WHERE species = '" + safeTree(initialTree) + "'",
+              sql: "SELECT * FROM msptrees WHERE name = '" + safeTree(initialTree) + "'",
             }
           }
           else {
             var subLayerOptions = {
-              sql: "SELECT * FROM madison_trees ",
+              sql: "SELECT * FROM msptrees ",
             }
           }
 
@@ -129,7 +129,7 @@
       var page = 0;
       function search() {
         var sql = cartodb.SQL({ user: 'dkan-admin' });
-         sql.execute("SELECT DISTINCT species FROM madison_trees ORDER BY species ASC").done(function(data) {
+         sql.execute("SELECT DISTINCT name FROM msptrees ORDER BY species ASC").done(function(data) {
             items = [];
             $.each(data.rows, function(key, value) {
               items.push(value.species);
@@ -151,11 +151,11 @@
       }
       function stats(tree) {
         var sql = cartodb.SQL({ user: 'dkan-admin' });
-          sql.execute("SELECT count(species) as count FROM madison_trees WHERE species = '" + safeTree(tree) + "'").done(function(data) {
+          sql.execute("SELECT count(name) as count FROM msptrees WHERE species = '" + safeTree(tree) + "'").done(function(data) {
              treeCount = data.rows[0].count;
              $("#tree-count").text(treeCount);
              $(".tree-name").text(tree);
-             sql.execute("SELECT diameter_at_4_5_ft_in as diameter FROM madison_trees WHERE species = '" + safeTree(tree) + "'").done(function(data) {
+             sql.execute("SELECT width as diameter FROM msptrees WHERE species = '" + safeTree(tree) + "'").done(function(data) {
                var total = 0;
                var largest = 0;
                var smallest = 100;
@@ -178,7 +178,7 @@
       }
       function graph(page) {
         var sql = cartodb.SQL({ user: 'dkan-admin' });
-          sql.execute("SELECT species, count(species) as count FROM madison_trees group by (species) order by count desc LIMIT 10 OFFSET " + page + "").done(function(data) {
+          sql.execute("SELECT name, count(name) as count FROM msptrees group by (name) order by count desc LIMIT 10 OFFSET " + page + "").done(function(data) {
             var count = [];
             var species = [];
             var treeData = [{
@@ -381,7 +381,7 @@
     </div>
     <h2>About</h2>
     <div class="well well-sm">
-      The following visualization is built with data provided by the City of Madison. See <a href="https://dkan.cartodb.com/u/dkan-admin/viz/6f588616-d19d-11e4-a931-7054d21a95e5/map">original data</a>. These tree counts are only on public property and do not include some parks or trees on private land.
+      The following visualization is built with data provided by the City of Mineapolis. See <a href="https://dkan.cartodb.com/u/dkan-admin/viz/6f588616-d19d-11e4-a931-7054d21a95e5/map">original data</a>. These tree counts are only on public property and do not include some parks or trees on private land.
     </div>
     </div></div>
 
