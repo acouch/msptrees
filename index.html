@@ -122,21 +122,21 @@
 
       function updateQuery(tree) {
         sublayers[0].set({
-          sql: "SELECT * FROM madison_trees WHERE species = '" + safeTree(tree) + "'",
+          sql: "SELECT * FROM msptrees WHERE name = '" + safeTree(tree) + "'",
         });
         $("h2.tree-type").text(tree);
       }
       var page = 0;
       function search() {
         var sql = cartodb.SQL({ user: 'dkan-admin' });
-         sql.execute("SELECT DISTINCT name FROM msptrees ORDER BY species ASC").done(function(data) {
+         sql.execute("SELECT DISTINCT name FROM msptrees ORDER BY name ASC").done(function(data) {
             items = [];
             $.each(data.rows, function(key, value) {
-              items.push(value.species);
+              items.push(value.name);
               $('#search-select')
                 .append($("<option></option>")
                 .attr("value",key)
-                .text(value.species));
+                .text(value.name));
             });
             $("#search-select").trigger("chosen:updated");
           });
@@ -151,11 +151,11 @@
       }
       function stats(tree) {
         var sql = cartodb.SQL({ user: 'dkan-admin' });
-          sql.execute("SELECT count(name) as count FROM msptrees WHERE species = '" + safeTree(tree) + "'").done(function(data) {
+          sql.execute("SELECT count(name) as count FROM msptrees WHERE name = '" + safeTree(tree) + "'").done(function(data) {
              treeCount = data.rows[0].count;
              $("#tree-count").text(treeCount);
              $(".tree-name").text(tree);
-             sql.execute("SELECT width as diameter FROM msptrees WHERE species = '" + safeTree(tree) + "'").done(function(data) {
+             sql.execute("SELECT width as diameter FROM msptrees WHERE name = '" + safeTree(tree) + "'").done(function(data) {
                var total = 0;
                var largest = 0;
                var smallest = 100;
@@ -180,14 +180,14 @@
         var sql = cartodb.SQL({ user: 'dkan-admin' });
           sql.execute("SELECT name, count(name) as count FROM msptrees group by (name) order by count desc LIMIT 10 OFFSET " + page + "").done(function(data) {
             var count = [];
-            var species = [];
+            var name = [];
             var treeData = [{
               key: "Number of Trees",
               values: []
             }];
             var values = []
             for (i in data.rows) {
-              values.push({label: data.rows[i].species, value: data.rows[i].count})
+              values.push({label: data.rows[i].name, value: data.rows[i].count})
             }
             var treeData = [{
               key: "Number of Trees",
@@ -354,7 +354,7 @@
             </nav>
             <div id="chart"><svg></svg></div>
             <br>
-            Number of trees by species in Madison.
+            Number of trees by species in Minneapolis.
         </div>
     </div>
     <br>
